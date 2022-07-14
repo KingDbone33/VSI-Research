@@ -1,0 +1,85 @@
+import secrets
+import random
+import hashlib
+import requests
+import time
+
+
+#Stuff for defining and tracking winning
+WinHash = 0
+win = 0
+count = 0
+total_prize = 0
+round_count = 0
+total_count = 0
+
+#Definition of x, y, and b
+x = secrets.token_hex(16)
+y = secrets.token_hex(16)
+
+
+server_response = requests.get('https://api.drand.sh/public/latest').json()
+
+#Start
+print('Hello there, welcome to your micromayment transaction hub.')
+time.sleep(2)
+print('Before we get started today I do need to ask you a few questions.')
+time.sleep(2)
+macro = int(input('What is your macropayment for your transaction today? '))
+win_prob = float(input('What is your desired win probability today, .1, .01, or .001? '))
+
+win_prob_denom = int( 1 / win_prob )
+win_decimal = random.randint(0, win_prob_denom - 1 )
+
+#The loop
+while total_count < 100:
+    count = 0
+
+    #Stuff for rand beacon
+    if count < 30:
+        round_no = server_response[ 'round' ]
+         
+    else:
+        round_no = server_response[ 'round' ]
+        randomness = server_response[ 'randomness' ]
+
+
+    #Defining, combining, and hashing strings x, y, and randomness
+    B = x + y + randomness
+    combinedHash = str(hashlib.sha256(B.encode()).hexdigest())
+
+    #Loop
+    while count < 300:
+        combinedHash_decimal = int(combinedHash, 16)
+
+        round_count = round_count + 1
+        print('To win this round you need to match the last three hash characters which are, ' + str(combinedHash_decimal % win_prob_denom) +
+              ' to ' + str(win_decimal) + '. ' + str(round_count))
+        
+        #Win function 
+        if win_decimal == combinedHash_decimal % win_prob_denom:
+            win = win + 1
+        count = count + 1        
+        #Hashes the previousely hashed value
+        combinedHash = str(hashlib.sha256(combinedHash.encode()).hexdigest())
+    total_count = total_count + 1
+    
+    
+    
+total_prize = macro * win
+print('Good job!')
+time.sleep(1)
+print('You won a total of ' + str(win) + ' times and as such...')
+time.sleep(2)
+print('Your total prize is worth $' + str(total_prize) + ' over '+ str(round_count) +  ' rounds of gameplay!')
+
+
+
+
+
+
+
+
+
+
+
