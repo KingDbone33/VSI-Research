@@ -2,54 +2,43 @@ import secrets
 import random
 import hashlib
 import requests
-import time
 
-
-#Stuff for defining and tracking winning
-WinHash = 0
+# Stuff for defining and tracking winning
 win = 0
-count = 0
-total_prize = 0
 round_count = 0
-total_count = 0
 
-#Definition of x, y, and b
+# Definition of x, y, and b
 x = secrets.token_hex(16)
 y = secrets.token_hex(16)
 
-
+# Obtain randomness values
 server_response = requests.get('https://api.drand.sh/public/latest').json()
+cur_round = server_response[ 'round' ]
+randomness = []
+for i in range( 100 ):
+    server_response = requests.get( 'https://api.drand.sh/public/' + str( cur_round - i ) ).json()
+    randomness.append( server_response[ 'randomness' ] )
 
-#Start
-print('Hello there, welcome to your micromayment transaction hub.')
-time.sleep(2)
-print('Before we get started today I do need to ask you a few questions.')
-time.sleep(2)
+# Start
 macro = int(input('What is your macropayment for your transaction today? '))
 win_prob = float(input('What is your desired win probability today, .1, .01, or .001? '))
 
 win_prob_denom = int( 1 / win_prob )
 win_decimal = random.randint(0, win_prob_denom - 1 )
+micropayment_per_lottery = macro * win_prob
 
 #The loop
-while total_count < 100:
-    count = 0
-
-    #Stuff for rand beacon
-    if count < 30:
-        round_no = server_response[ 'round' ]
-         
-    else:
-        round_no = server_response[ 'round' ]
-        randomness = server_response[ 'randomness' ]
-
+randomness_round = 0
+while randomness_round < 100:
+    lottery_round = 0
+    cur_randomness = randomness[ randomness_round ]
 
     #Defining, combining, and hashing strings x, y, and randomness
-    B = x + y + randomness
+    B = x + y + cur_randomness
     combinedHash = str(hashlib.sha256(B.encode()).hexdigest())
 
     #Loop
-    while count < 300:
+    while lottery_round < 300:
         combinedHash_decimal = int(combinedHash, 16)
 
         round_count = round_count + 1
@@ -59,27 +48,12 @@ while total_count < 100:
         #Win function 
         if win_decimal == combinedHash_decimal % win_prob_denom:
             win = win + 1
-        count = count + 1        
+        lottery_round = lottery_round + 1        
         #Hashes the previousely hashed value
         combinedHash = str(hashlib.sha256(combinedHash.encode()).hexdigest())
-    total_count = total_count + 1
-    
-    
+    randomness_round = randomness_round + 1
     
 total_prize = macro * win
 print('Good job!')
-time.sleep(1)
 print('You won a total of ' + str(win) + ' times and as such...')
-time.sleep(2)
 print('Your total prize is worth $' + str(total_prize) + ' over '+ str(round_count) +  ' rounds of gameplay!')
-
-
-
-
-
-
-
-
-
-
-
