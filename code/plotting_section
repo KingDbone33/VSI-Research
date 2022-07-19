@@ -1,8 +1,30 @@
 from asyncore import read
+from binascii import b2a_hqx
 import secrets
 import random
 import hashlib
 import requests
 import matplotlib.pyplot as plt
 
+
+a = []
+b = []
+
 Plotting = open('NumberReport.txt', 'r')
+macro = Plotting.readline()
+macro = Plotting.readline()
+macro = Plotting.readline()
+
+for line in open('NumberReport.txt', 'r'):
+    lines = [i for i in line.split()]
+    Hey = Plotting.readline().split()
+    a.append(lines[0])
+    b.append(int(lines[2]))
+      
+plt.title("Students Marks")
+plt.xlabel('Roll Number')
+plt.ylabel('Marks')
+plt.yticks(b)
+plt.plot(a, b, marker = 'o', c = 'g')
+  
+plt.show()

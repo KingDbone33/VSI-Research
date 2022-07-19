@@ -27,6 +27,17 @@ win_prob_denom = int( 1 / win_prob )
 win_decimal = random.randint(0, win_prob_denom - 1 )
 micropayment_per_lottery = macro * win_prob
 
+
+
+#appendfile
+FileF = open('NumberReport.txt', 'a')
+FileF.write(str(macro) + "\n")
+FileF.write(str(win_prob) + "\n")
+FileF.write(str(x) + "\n")
+FileF.write(str(y) + "\n")
+
+
+
 #The loop
 randomness_round = 0
 while randomness_round < 100:
@@ -40,7 +51,11 @@ while randomness_round < 100:
     #Loop
     while lottery_round < 300:
         combinedHash_decimal = int(combinedHash, 16)
-
+        current_round = randomness_round* 300 + lottery_round 
+        current_total_micropayment = macro * win_prob * lottery_round
+        current_total_macropayment = win * macro
+        # if round_count == 11:
+        #     round_count = round_count - 10
         round_count = round_count + 1
         print('To win this round you need to match the last three hash characters which are, ' + str(combinedHash_decimal % win_prob_denom) +
               ' to ' + str(win_decimal) + '. ' + str(round_count))
@@ -48,12 +63,26 @@ while randomness_round < 100:
         #Win function 
         if win_decimal == combinedHash_decimal % win_prob_denom:
             win = win + 1
+            print('Congrats that is a win right there!!!/n')
+        else:
+           print('You did not win this round.')
+
+        print('Current Lottery Round  is ' + str(current_round) + '.')
+        print('Current total micropayment is worth $' + str(current_total_micropayment) + ' dollars.')
+        print('Current total macropayment is worth $' + str(current_total_macropayment) + '.0 dollars.')
+        print(' ')
+        FileF.write(str(current_round) + ' ' + str(current_total_micropayment) + ' ' + str(current_total_macropayment) + "\n")
+
         lottery_round = lottery_round + 1        
         #Hashes the previousely hashed value
         combinedHash = str(hashlib.sha256(combinedHash.encode()).hexdigest())
+        
     randomness_round = randomness_round + 1
     
 total_prize = macro * win
-print('Good job!')
+print(' ')
 print('You won a total of ' + str(win) + ' times and as such...')
-print('Your total prize is worth $' + str(total_prize) + ' over '+ str(round_count) +  ' rounds of gameplay!')
+print('Your total prize is worth $' + str(total_prize) + '.0 over '+ str(round_count) +  ' rounds of gameplay!')
+print(' ')
+
+FileF.close()
