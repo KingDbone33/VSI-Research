@@ -52,7 +52,7 @@ while randomness_round < 100:
     while lottery_round < 300:
         combinedHash_decimal = int(combinedHash, 16)
         current_round = randomness_round* 300 + lottery_round 
-        current_total_micropayment = macro * win_prob * lottery_round
+        current_total_micropayment = macro * win_prob * current_round
         current_total_macropayment = win * macro
         # if round_count == 11:
         #     round_count = round_count - 10
