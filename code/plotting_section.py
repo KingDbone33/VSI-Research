@@ -10,9 +10,9 @@ p = plotting.readline()
 x = plotting.readline()
 y = plotting.readline()
 
-for line_number in range(3000):
+for line_number in range(30000):
     line = plotting.readline().split()
-    x_rounds.append( line[ 0 ] )
+    x_rounds.append( int( line[ 0 ] ) + 1 )
     y_micro.append( float( line[ 1 ] ) )
     y_macro.append( float( line[ 2 ] ) )
 
