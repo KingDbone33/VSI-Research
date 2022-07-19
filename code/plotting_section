@@ -1,0 +1,8 @@
+from asyncore import read
+import secrets
+import random
+import hashlib
+import requests
+import matplotlib.pyplot as plt
+
+Plotting = open('NumberReport.txt', 'r')
