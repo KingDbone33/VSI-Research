@@ -5,7 +5,13 @@ Include:
 - What drawback of probabilistic micropayment schemes are we trying to solve? What benefit will solving it bring?
 - What is the proposed solution?
 
-Micropayments, defined as payments worth pennies or fractions of pennies[1], are of interest in cryptocurrency research since processing them as normal transactions may result in transaction fees that exceed the value of the payment itself. One class of micropayment schemes, namely probabilistic micropayment schemes, offer a simple way to aggregate low-value transactions across merchant-client pairs[2] through cryptographic lotteries. However, the requirement of two-way communication during every lottery round as well as the amount of state-keeping required can cause significant overhead to resource-constrained (eg: IoT) devices. To solve this, we propose a non-interactive probabilistic micropayment scheme called ZProtocol that uses distributed randomness beacons to allow merchants and clients to delegate the lottery to any third party or smart contract while preserving the unbiasedness of the lottery.
+Micropayments, defined as payments worth pennies or fractions of pennies[1], are of interest in cryptocurrency research since processing
+ them as normal transactions may result in transaction fees that exceed the value of the payment itself. One class of micropayment schemes,
+  namely probabilistic micropayment schemes, offer a simple way to aggregate low-value transactions across merchant-client pairs[2] through 
+  cryptographic lotteries. However, the requirement of two-way communication during every lottery round as well as the amount of state-keeping 
+  required can cause significant overhead to resource-constrained (eg: IoT) devices. To solve this, we propose a non-interactive probabilistic 
+  micropayment scheme called ZProtocol that uses distributed randomness beacons to allow merchants and clients to delegate the lottery to any 
+  third party or smart contract while preserving the unbiasedness of the lottery.
 
 - Protocol Description
 Step 1. The merchant (M) and the client (C) agree on a macropayment value (V), desired win probability (p), winning ticket number (w), lottery interval in seconds (i) and total number of lottery draws (l).
@@ -18,12 +24,27 @@ Step 6. The merchant wins the ith lottery in randomness beacon round r if L^i_r 
 
 - Discussion & Simulation
 Include:
-- Why do we think that the protocol works? (remember the discussion about whether any party can influence the result of the lottery)
-- What was the goal of our simulation?
-- How exactly did we do the simulation? Which randomness beacon did we use?
+- Why do we think that the protocol works? (remember the discussion about whether any party can influence the result of the lottery) 
+- What was the goal of our simulation? 
+- How exactly did we do the simulation? Which randomness beacon did we use? 
+
+The protocol works because not one part of the transaction can alone influence any other part of the transaction, and as such we see that this maintains 
+the integrity of this procedure. However due to the fact that the buyer at times can decide whether or not to continue the transaction after becoming
+aware of the micropayement value, the integrity of our protocol may not be guaranteed at all times. The goal of our simulation was to compare how well our 
+protocol functioned compared to that of an interactive probabilistic micropayment scheme. To facilitate this process we used the randomness beacon drand.love 
+which allowed us to run our protocol with 100 different randomly generated values, and get the best results we could possibly generate. 
 
 - Results & Future work
-Include:
+Included:marco dn []
 - What did the graphs show us?
-- What more is to be done to ensure that our protocol works?
-- What can be done in the future to improve the protocol?
+- What more is to be done to ensure that our protocol works? 
+- What can be done in the future to improve the protocol?. 
+
+
+The graphs showed us the difference between the total macropayments value for the interactive probabilistic function and our created protocol. From this 
+difference we saw that the difference of the two values insignifcant, and as such we can see that our protocol does operate a highly functional level. Running 
+the protocol more while continuting to use different random numbers will help ensure the protocols usefulness in terms of it's accuracy. You could carry
+out other transactions simultaneously with different random values being graphed  all together and analyzing the graphs that will be generated from this 
+side by side execution.
+
+defes
