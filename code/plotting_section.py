@@ -25,7 +25,8 @@ plt.plot(x_rounds, y_micro, label="Micropayment")
 plt.plot(x_rounds, y_macro, label="ZProtocol Macropayment")
 plt.plot(x_rounds, y_macro_int, label="Interactive Macropayment")
 plt.legend( loc="upper right" )
-  
+plt.savefig("Win_Results.jpg")
+
 plt.show()
 
 plotting.close()

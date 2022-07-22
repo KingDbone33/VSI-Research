@@ -64,6 +64,13 @@ while randomness_round < 100:
 
     #Loop
     while lottery_round < 300:
+        if lottery_round % 10 == 0:
+            x = secrets.token_hex(16)
+            y = secrets.token_hex(16)
+            B = x + y + cur_randomness
+            combinedHash = str(hashlib.sha256(B.encode()).hexdigest())
+
+
         combinedHash_decimal = int(combinedHash, 16)
         current_round = randomness_round* 300 + lottery_round 
         current_total_micropayment = macro * win_prob * current_round
@@ -91,8 +98,9 @@ while randomness_round < 100:
         print('Current total macropayment is worth $' + str(current_total_macropayment) + '.0 dollars.')
         print('Current total interactive macropayment is worth $' + str(interactive_win*macro) + '.0 dollars.')
         print(' ')
+        diff = str(interactive_win * macro - current_total_macropayment)
         FileF.write(str(current_round) + ' ' + str(current_total_micropayment) + ' ' + str(current_total_macropayment) + ' ' +
-                    str(interactive_win*macro) + "\n")
+                    str(interactive_win * macro) + ' ' + diff + "\n")
 
         lottery_round = lottery_round + 1        
         #Hashes the previousely hashed value
