@@ -28,7 +28,16 @@ win_prob_denom = int( 1 / win_prob )
 win_decimal = random.randint(0, win_prob_denom - 1 )
 micropayment_per_lottery = macro * win_prob
 
-
+#20 value array for randomness counter
+x_random = []
+y_random = []
+x_y_hash_counter = 0
+while x_y_hash_counter < 20:
+    x = secrets.token_hex(16)
+    y = secrets.token_hex(16)
+    x_random.append(x)
+    y_random.append(y)
+    x_y_hash_counter += 1
 
 #appendfile
 FileF = open('NumberReport.txt', 'w')
@@ -40,37 +49,36 @@ FileF.write(str(y) + "\n")
 #Hashed 30000 times
 x_hashed_array = []
 y_hashed_array = []
-hashed_counter = 0
-x_hash = x
-y_hash = y 
-while hashed_counter < 30000:
-#makes hash
-  x_hash = str(hashlib.sha256(x_hash.encode()).hexdigest()) 
-  y_hash = str(hashlib.sha256(y_hash.encode()).hexdigest())    
-  #puts hash into array
-  x_hashed_array.append(x_hash)
-  y_hashed_array.append(y_hash)
-  hashed_counter += 1
+zero_counter = 0
+while zero_counter < 20:
+    x_hash = x_random[zero_counter]
+    y_hash = y_random[zero_counter]
+    hashed_counter = 0
+    while hashed_counter < 1500:
+        x_hash = str(hashlib.sha256(x_hash.encode()).hexdigest()) 
+        y_hash = str(hashlib.sha256(y_hash.encode()).hexdigest())
+        # puts hash into array
+        x_hashed_array.append(x_hash)
+        y_hashed_array.append(y_hash)
+        hashed_counter += 1
+    zero_counter += 1
 
 #The loop
 randomness_round = 0
+zero_counter = 0
 while randomness_round < 100:
     lottery_round = 0
     cur_randomness = randomness[ randomness_round ]
-
+    if randomness_round % 5 == 0:
+        x = x_random[zero_counter]
+        y = y_random[zero_counter]
+        zero_counter += 1
     #Defining, combining, and hashing strings x, y, and randomness
     B = x + y + cur_randomness
     combinedHash = str(hashlib.sha256(B.encode()).hexdigest())
 
     #Loop
     while lottery_round < 300:
-        if lottery_round % 10 == 0:
-            x = secrets.token_hex(16)
-            y = secrets.token_hex(16)
-            B = x + y + cur_randomness
-            combinedHash = str(hashlib.sha256(B.encode()).hexdigest())
-
-
         combinedHash_decimal = int(combinedHash, 16)
         current_round = randomness_round* 300 + lottery_round 
         current_total_micropayment = macro * win_prob * current_round
