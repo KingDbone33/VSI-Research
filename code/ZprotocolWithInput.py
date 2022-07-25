@@ -8,10 +8,6 @@ win = 0
 interactive_win = 0
 round_count = 0
 
-# Definition of x, y, and b
-x = secrets.token_hex(16)
-y = secrets.token_hex(16)
-
 # Obtain randomness values
 server_response = requests.get('https://api.drand.sh/public/latest').json()
 cur_round = server_response[ 'round' ]
@@ -43,8 +39,6 @@ while x_y_hash_counter < 20:
 FileF = open('NumberReport.txt', 'w')
 FileF.write(str(macro) + "\n")
 FileF.write(str(win_prob) + "\n")
-FileF.write(str(x) + "\n")
-FileF.write(str(y) + "\n")
 
 #Hashed 30000 times
 x_hashed_array = []
@@ -63,6 +57,8 @@ while zero_counter < 20:
         hashed_counter += 1
     zero_counter += 1
 
+histogram = {x:0 for x in range(win_prob_denom)}
+
 #The loop
 randomness_round = 0
 zero_counter = 0
@@ -73,6 +69,7 @@ while randomness_round < 100:
         x = x_random[zero_counter]
         y = y_random[zero_counter]
         zero_counter += 1
+        interactive_cur_pos = zero_counter * 500 + 1499
     #Defining, combining, and hashing strings x, y, and randomness
     B = x + y + cur_randomness
     combinedHash = str(hashlib.sha256(B.encode()).hexdigest())
@@ -80,7 +77,7 @@ while randomness_round < 100:
     #Loop
     while lottery_round < 300:
         combinedHash_decimal = int(combinedHash, 16)
-        current_round = randomness_round* 300 + lottery_round 
+        current_round = randomness_round * 300 + lottery_round 
         current_total_micropayment = macro * win_prob * current_round
         current_total_macropayment = win * macro
         # if round_count == 11:
@@ -97,7 +94,9 @@ while randomness_round < 100:
            print('You did not win this round.')
 
         #Interactive win check
-        interactive_combined = int(x_hashed_array[current_round], 16) ^ int(y_hashed_array[current_round], 16)
+        interactive_combined = int(x_hashed_array[interactive_cur_pos], 16) ^ int(y_hashed_array[interactive_cur_pos], 16)
+        print( interactive_combined % win_prob_denom )
+        histogram[ interactive_combined % win_prob_denom ] += 1
         if win_decimal == interactive_combined % win_prob_denom:
             interactive_win += 1
 
@@ -110,7 +109,8 @@ while randomness_round < 100:
         FileF.write(str(current_round) + ' ' + str(current_total_micropayment) + ' ' + str(current_total_macropayment) + ' ' +
                     str(interactive_win * macro) + ' ' + diff + "\n")
 
-        lottery_round = lottery_round + 1        
+        lottery_round = lottery_round + 1
+        interactive_cur_pos -= 1
         #Hashes the previousely hashed value
         combinedHash = str(hashlib.sha256(combinedHash.encode()).hexdigest())
         
@@ -121,5 +121,7 @@ print(' ')
 print('You won a total of ' + str(win) + ' times and as such...')
 print('Your total prize is worth $' + str(total_prize) + '.0 over '+ str(round_count) +  ' rounds of gameplay!')
 print(' ')
+
+print(histogram)
 
 FileF.close()

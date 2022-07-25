@@ -8,8 +8,6 @@ y_macro_int = []
 plotting = open('NumberReport.txt', 'r')
 macro = plotting.readline()
 p = plotting.readline()
-x = plotting.readline()
-y = plotting.readline()
 
 for line_number in range(30000):
     line = plotting.readline().split()
